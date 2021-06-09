@@ -30,7 +30,7 @@ int main()
 
 		window.clear(); 
 		im.event_(window, event);
-		 
+
 		im.paint(window);
 		 
 		window.display();

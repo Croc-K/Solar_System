@@ -232,16 +232,14 @@ public:
 class miniGame
 {
 private:
-	float mass1, mass2;
-	float zoom = 10;
-
 	float G = 6;
+
 	float arr1[4];
 	float arr2[4];
+	float arr3[4];
+
 	float ax = 0.01, ay = 0;
 	float vx = 0.01, vy = 0.01;
-	float x1, x2, y1, y2;
-	float l;
 
 	objGame Eart, Mars, Roket;
 	Button game, Exit, param, Start, Stop;
@@ -253,9 +251,9 @@ private:
 		switch (v)
 		{
 		case 0:
-			Eart.parameter(x, y, 5.9742 / zoom, 450, "sprite\\Earth_game.png", 40, 40, 0);
+			Eart.parameter(x, y, 5.9742, 450, "sprite\\Earth_game.png", 40, 40, 0);
 		case 1:
-			Mars.parameter(x, y, 0.642 / zoom, 390, "sprite\\Mars_game.png", 40, 40, 0);
+			Mars.parameter(x, y, 0.642, 390, "sprite\\Mars_game.png", 40, 40, 0);
 		case 2:
 			game.parameter(x, y, "sprite\\MiniGame.png");
 		case 3:
@@ -286,7 +284,7 @@ public:
 	{
 		vx = ax;
 		vy = ay;
-		Roket.parameter(x, y, mass / zoom, 50, "sprite\\Roket.png", -40, 20, 90);
+		Roket.parameter(x, y, mass, 50, "sprite\\Roket.png", -40, 20, 90);
 		Roket.sprite.setPosition(x, y);
 	}
 	Sprite sprite(int v)
@@ -308,52 +306,61 @@ public:
 		}
 	}
 
+	int gravity(float* arr1_, float* arr2_)
+	{
+		float mass1, mass2;
+		float x1, x2, y1, y2;
+		float l;
+		int k = 0;
+
+		x1 = arr1_[0];
+		x2 = arr2_[0];
+		mass1 = arr1[2];
+
+		y1 = arr1_[1];
+		y2 = arr2_[1];
+		mass2 = arr2_[2];
+
+		l = distance(x1, y1, x2, y2);
+		if (l <= 23)
+		{
+
+			ax = G * mass2 * mass1 * (x2 - x1) / pow(l, 3);
+			ay = G * mass2 * mass1 * (y2 - y1) / pow(l, 3);
+
+			vx = vx + ax / 100;
+			vy = vy + ay / 100;
+			std::cout << vx << "_" << vy << "\n";
+			k = 1;
+		}
+
+		return k;
+	}
+
 	void paint(RenderWindow& window, float time)
 	{
 		if (time != 0)
 		{
 			Roket.ret(arr1);
 			Eart.ret(arr2);
-
-			l = distance(arr1[0], arr1[1], arr2[0], arr2[1]);
-			if (l <= 24)
+			Mars.ret(arr3);
+			if (time != 0)
 			{
-				x1 = arr1[0];
-				x2 = arr2[0];
-				mass1 = arr1[2];
-
-				y1 = arr1[1];
-				y2 = arr2[1];
-				mass2 = arr2[2];
-
-				ax = G * mass2 * mass1 * (x2-x1) / pow(l, 3);
-				ay = G * mass2 * mass1 * (y2-y1) / pow(l, 3);
-
-				vx = vx + ax / 100;
-				vy = vy + ay / 100;
-				std::cout << vx << "_" << vy << "\n";
-				Roket.update(vx, vy, time);
-			}
-			else {
-				Mars.ret(arr2);
-				l = distance(arr1[0], arr1[1], arr2[0], arr2[1]);
-				if (l <= 24)
+				int i=0;
+				if (gravity(arr1, arr2) != 0)
 				{
-					x2 = arr2[0];
-					y2 = arr2[1];
-					mass2 = arr2[2];
-
-					ax = G * mass2 * mass1 * (x2 - x1) / pow(l, 3);
-					ay = G * mass2 * mass1 * (y1 - y1) / pow(l, 3);
-
-					vx = vx + ax / 100;
-					vy = vy + ay / 100;
-					std::cout << vx<<"_"<<vy<<"\n";
+					Roket.update(vx, vy, time);
+					i++;
+				}
+				if (gravity(arr1, arr3) != 0)
+				{
+					Roket.update(vx, vy, time);
+					i++;
+				}
+				if (i == 0)
+				{
 					Roket.update(vx, vy, time);
 				}
-				else
-					Roket.update(vx, vy, time);
-
 			}
 		}
 

@@ -23,8 +23,8 @@ private:
 
 	char O=' ';
 	float elem=0, elemNull=0, buff;
+
 	String Start;
-	String st;
 
 	Vector2u RENDER;
 
@@ -124,33 +124,42 @@ private:
 		{
 			game.RoketParameter(roket_x, roket_y, roket_ax, roket_ay, roket_mass);
 			pr = 0;
-			std::cout << roket_x << "-" << roket_y << "-" << roket_ax << "-" << roket_ay << "-" << roket_mass << "\n";
 		}
 		if (prPanel.sprite(1).getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			roket_x = elem;
-			prPanel.str(0, st);
 		}
 		if (prPanel.sprite(2).getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			roket_y = elem;
-			prPanel.str(1, st);
 		}
 		if (prPanel.sprite(3).getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			roket_ax = elem;
-			prPanel.str(2, st);
 		}
 		if (prPanel.sprite(4).getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			roket_ay = elem;
-			prPanel.str(3, st);
 		}
 		if (prPanel.sprite(5).getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			roket_mass = elem;
-			prPanel.str(4, st);
 		}
+	}
+	void printParameter()
+	{
+		std::ostringstream st0, st1, st2, st3, st4;
+		st0 << roket_x;
+		st1 << roket_y;
+		st2 << roket_ax;
+		st3 << roket_ay;
+		st4 << roket_mass;
+
+		prPanel.str(0, st0.str());
+		prPanel.str(1, st1.str());
+		prPanel.str(2, st2.str());
+		prPanel.str(3, st3.str());
+		prPanel.str(4, st4.str());
 	}
 
 public:
@@ -329,12 +338,10 @@ public:
 
 				if (pr == 1)
 				{
+					printParameter();
 					std::ostringstream ost;
 					ost << elem;
-
-					st = ost.str();
-
-					p.paint(window, st);
+					p.paint(window, ost.str());
 
 					prPanel.paint(window);
 				}
