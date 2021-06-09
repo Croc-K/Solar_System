@@ -190,7 +190,7 @@ public:
 };
 
 class objGame
-{
+{ 
 private:
 	Texture texture;
 	String s;
